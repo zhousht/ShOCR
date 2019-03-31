@@ -3,6 +3,7 @@ using AForge.Imaging.Filters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -21,10 +22,35 @@ namespace ShOCRLib
             {
                 return;
             }
+
             ToGray(ref image);
             //ToBlackWhite(ref image);
             RemoveNoise(ref image);
             Detection(ref image);
+        }
+
+        private System.Drawing.Image ResizeImage(System.Drawing.Image imgToResize)
+        {
+            float resolutionH = imgToResize.HorizontalResolution;
+            float resolutionV = imgToResize.VerticalResolution;
+
+            int scaleH = 300 / (int)resolutionH + 1;
+            int scaleV = 300 / (int)resolutionV + 1;
+
+            int newH = imgToResize.Width * scaleH;
+            int newV = imgToResize.Height * scaleV;
+
+            int sourceWidth = imgToResize.Width;
+            int sourceHeight = imgToResize.Height;
+
+            Bitmap b = new Bitmap(newH, newV);
+            Graphics g = Graphics.FromImage((System.Drawing.Image)b);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            g.DrawImage(imgToResize, 0, 0, newH, newV);
+            g.Dispose();
+
+            return (System.Drawing.Image)b;
         }
 
         /*
@@ -32,6 +58,9 @@ namespace ShOCRLib
          * */
         public void ToGray(ref Bitmap image)
         {
+
+            image = (Bitmap)ResizeImage((System.Drawing.Image)image);
+
             // Create a blank bitmap with the same dimensions
             Bitmap imageGray = new Bitmap(image);
             /*
@@ -44,7 +73,7 @@ namespace ShOCRLib
             
             image = AForge.Imaging.Image.Clone(image, PixelFormat.Format8bppIndexed);
             AForge.Imaging.Image.SetGrayscalePalette(image);*/
-
+            
             Median medianFilter = new Median();
             // apply the filter
             medianFilter.ApplyInPlace(image);
@@ -60,14 +89,36 @@ namespace ShOCRLib
             // apply the filter
             invertFilter.ApplyInPlace(image);
             
+            // create filter
+            OtsuThreshold filterOtsuThreshold = new OtsuThreshold();
+            // apply the filter
+            filterOtsuThreshold.ApplyInPlace(image);
+            // check threshold value
+            int t = filterOtsuThreshold.ThresholdValue;
+            
+            
             // create and configure the filter
             FillHoles holesFilter = new FillHoles();
-            holesFilter.MaxHoleHeight = 1;
-            holesFilter.MaxHoleWidth = 0;
+            holesFilter.MaxHoleHeight = 2;
+            holesFilter.MaxHoleWidth = 2;
             holesFilter.CoupledSizeFiltering = false;
             // apply the filter
             Bitmap result = holesFilter.Apply(image);
 
+            /*
+            BinaryDilatation3x3 bd = new BinaryDilatation3x3();
+            bd.ApplyInPlace(image);
+            bd.ApplyInPlace(image);
+            
+            // create filter
+            BlobsFiltering filterBlobsFiltering = new BlobsFiltering();
+            // configure filter
+            filterBlobsFiltering.CoupledSizeFiltering = true;
+            filterBlobsFiltering.MinWidth = 5;
+            filterBlobsFiltering.MinHeight = 5;
+            // apply the filter
+            filterBlobsFiltering.ApplyInPlace(image);
+            */
         }
 
         /*
