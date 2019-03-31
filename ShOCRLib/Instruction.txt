@@ -1,0 +1,11 @@
+﻿Install-Package AForge.Imaging -Version 2.2.5
+
+
+http://www.aforgenet.com/framework/docs/
+
+http://www.aforgenet.com/framework/features/binarization.html
+
+Nuget package Tesseract by Charles Weld
+
+Download:
+https://github.com/tesseract-ocr/tesseract
