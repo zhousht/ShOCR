@@ -12,3 +12,5 @@ https://github.com/tesseract-ocr/tesseract
 
 Improving the quality of the output:
 https://github.com/tesseract-ocr/tesseract/wiki/ImproveQuality
+
+https://stackoverflow.com/questions/27865043/the-best-algorithm-for-grayscale-for-tesseract-input

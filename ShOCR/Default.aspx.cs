@@ -30,15 +30,18 @@ namespace ShOCR
             lib.ToGray(ref image);
             
             imageGray.ImageUrl = ToImageSource(image);
-            
-            lib.ToBlackWhite(ref image);
 
-            imageBlackWhite.ImageUrl = ToImageSource(image);
-            /*
-            lib.RemoveNoise(ref image);
+            //lib.ToBlackWhite(ref image);
 
-            imageNoiseRmoved.ImageUrl = ToImageSource(image);
-            */
+            //imageBlackWhite.ImageUrl = ToImageSource(image);
+
+            //lib.RemoveNoise(ref image);
+
+            //imageNoiseRmoved.ImageUrl = ToImageSource(image);
+
+            lib.Detection(ref image);
+
+           imageDetected.ImageUrl = ToImageSource(image);
 
             string result = lib.GetText(image);
 

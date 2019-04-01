@@ -63,16 +63,7 @@ namespace ShOCRLib
 
             // Create a blank bitmap with the same dimensions
             Bitmap imageGray = new Bitmap(image);
-            /*
-            // From this bitmap, the graphics can be obtained, because it has the right PixelFormat
-            using (Graphics g = Graphics.FromImage(image))
-            {
-                // Draw the original bitmap onto the graphics of the new bitmap
-                g.DrawImage(imageGray, 0, 0);
-            }
-            
-            image = AForge.Imaging.Image.Clone(image, PixelFormat.Format8bppIndexed);
-            AForge.Imaging.Image.SetGrayscalePalette(image);*/
+
             
             Median medianFilter = new Median();
             // apply the filter
@@ -95,8 +86,8 @@ namespace ShOCRLib
             filterOtsuThreshold.ApplyInPlace(image);
             // check threshold value
             int t = filterOtsuThreshold.ThresholdValue;
-            
-            
+
+            /*
             // create and configure the filter
             FillHoles holesFilter = new FillHoles();
             holesFilter.MaxHoleHeight = 2;
@@ -105,7 +96,7 @@ namespace ShOCRLib
             // apply the filter
             Bitmap result = holesFilter.Apply(image);
 
-            /*
+            
             BinaryDilatation3x3 bd = new BinaryDilatation3x3();
             bd.ApplyInPlace(image);
             bd.ApplyInPlace(image);
@@ -143,12 +134,12 @@ namespace ShOCRLib
             FiltersSequence filterSquence = new FiltersSequence(Grayscale.CommonAlgorithms.BT709,
                                  new Threshold(100), new FillHoles());
             image = filterSquence.Apply(image);
-
+            */
             // create filter
             ConservativeSmoothing filterSmoothing = new ConservativeSmoothing();
             // apply the filter
             filterSmoothing.ApplyInPlace(image);
-            */
+            
         }
 
         /*
@@ -167,18 +158,6 @@ namespace ShOCRLib
             // rotate image applying the filter
             Bitmap rotatedImage = rotationFilter.Apply(image);
 
-            BinaryDilatation3x3 bd = new BinaryDilatation3x3();
-            bd.ApplyInPlace(image);
-            bd.ApplyInPlace(image);
-
-            // create filter
-            BlobsFiltering filter = new BlobsFiltering();
-            // configure filter
-            filter.CoupledSizeFiltering = true;
-            filter.MinWidth = 3;
-            filter.MinHeight = 3;
-            // apply the filter
-            filter.ApplyInPlace(image);
 
         }
 
